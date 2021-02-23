@@ -15,4 +15,10 @@ describe("movies", () => {
     const { body } = await request(app).get("/movies").expect(200);
     expect(body).toMatchObject([{ movieName: "Lion King" }]);
   });
+
+  it("GET /movies/:id should return the movie with id", async () => {
+    const expectedMovie = { movieName: "Lion King" };
+    const { body } = await request(app).get("/movies/1").expect(200);
+    expect(body).toMatchObject(expectedMovie);
+  });
 });

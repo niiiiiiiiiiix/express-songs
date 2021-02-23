@@ -111,4 +111,11 @@ app.get("/movies", (req, res) => {
   res.status(200).json(movies);
 });
 
+app.get("/movies/:id", (req, res) => {
+  let searchMovie = movies.find(
+    (movie) => movie.id === parseInt(req.params.id)
+  );
+  res.status(200).json(searchMovie);
+});
+
 module.exports = app;
