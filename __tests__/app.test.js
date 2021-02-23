@@ -72,7 +72,32 @@ describe("App", () => {
   it("GET /songs/:id should return the correct song", async () => {
     const expectedSong = { name: "Pink Moon", artist: "Nick Drake" };
     const { body: actualSong } = await request(app).get("/songs/2").expect(200);
+    // we can actually just use "body" instead of "body:actualSong"
+    // it just renames the response to something that has a more meaningful name
 
     expect(actualSong).toMatchObject(expectedSong);
+    // so if we use body then it can just be expect(body)....
+  });
+
+  it("PUT /songs/:id should update the song entry", async () => {
+    const updatedSong = { name: "Pink Moon", artist: "Nick Drake" };
+    const expectedSong = {
+      id: 1,
+      name: "Pink Moon",
+      artist: "Nick Drake",
+    };
+    const { body } = await request(app)
+      .put("/songs/1")
+      .send(updatedSong)
+      .expect(200);
+    expect(body).toMatchObject(expectedSong);
+  });
+
+  it("DELETE /songs/:id should delete the correct song", async () => {
+    const toRemoveSong = {};
+    const { body: actualSong } = await request(app)
+      .delete("/songs/1")
+      .expect(200);
+    expect(actualSong).toMatchObject(toRemoveSong);
   });
 });

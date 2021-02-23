@@ -40,8 +40,8 @@ app.get("/songs/:id", (req, res) => {
 });
 
 app.put("/songs/:id", (req, res) => {
-  song.name = req.body.name;
-  song.artist = req.body.artist;
+  req.song.name = req.body.name;
+  req.song.artist = req.body.artist;
   res.status(200).json(req.song);
 });
 
