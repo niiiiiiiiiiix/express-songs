@@ -30,4 +30,15 @@ describe("movies", () => {
       .expect(200);
     expect(body).toMatchObject(updatedMovie);
   });
+
+  it("DELETE /movies/:id should return the deleted movie", async () => {
+    const deletedMovie = { movieName: "Frozen 2" };
+    const { body } = await request(app).delete("/movies/1").expect(200);
+    expect(body).toMatchObject(deletedMovie);
+  });
+
+  it("GET /movies should return an empty array", async () => {
+    const { body } = await request(app).get("/movies").expect(200);
+    expect(body).toMatchObject([]);
+  });
 });

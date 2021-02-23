@@ -124,4 +124,12 @@ app.put("/movies/:id", (req, res) => {
   res.status(200).json(movie);
 });
 
+app.delete("/movies/:id", (req, res) => {
+  let movie = movies.find((movie) => movie.id === parseInt(req.params.id));
+  let index = movies.indexOf(movie);
+  movies.splice(index, 1);
+
+  res.status(200).json(movie);
+});
+
 module.exports = app;
