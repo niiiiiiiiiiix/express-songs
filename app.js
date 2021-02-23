@@ -121,17 +121,15 @@ app.get("/movies/:id", (req, res) => {
 });
 
 app.put("/movies/:id", (req, res) => {
-  let movie = movies.find((movie) => movie.id === parseInt(req.params.id));
-  movie.movieName = req.body.movieName;
-  res.status(200).json(movie);
+  req.movie.movieName = req.body.movieName;
+  res.status(200).json(req.movie);
 });
 
 app.delete("/movies/:id", (req, res) => {
-  let movie = movies.find((movie) => movie.id === parseInt(req.params.id));
-  let index = movies.indexOf(movie);
+  let index = movies.indexOf(req.movie);
   movies.splice(index, 1);
 
-  res.status(200).json(movie);
+  res.status(200).json(req.movie);
 });
 
 module.exports = app;
