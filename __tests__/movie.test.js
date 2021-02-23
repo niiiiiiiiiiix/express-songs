@@ -16,13 +16,13 @@ describe("movies", () => {
     expect(body).toMatchObject([{ movieName: "Lion King" }]);
   });
 
-  it("GET /movies/:id should return the movie with id", async () => {
+  it("GET /movies/:movieID should return the movie with id", async () => {
     const expectedMovie = { movieName: "Lion King" };
     const { body } = await request(app).get("/movies/1").expect(200);
     expect(body).toMatchObject(expectedMovie);
   });
 
-  it("PUT /movies/:id should return the movie with id", async () => {
+  it("PUT /movies/:movieID should return the movie with id", async () => {
     const updatedMovie = { movieName: "Frozen 2" };
     const { body } = await request(app)
       .put("/movies/1")
@@ -31,7 +31,7 @@ describe("movies", () => {
     expect(body).toMatchObject(updatedMovie);
   });
 
-  it("DELETE /movies/:id should return the deleted movie", async () => {
+  it("DELETE /movies/:movieID should return the deleted movie", async () => {
     const deletedMovie = { movieName: "Frozen 2" };
     const { body } = await request(app).delete("/movies/1").expect(200);
     expect(body).toMatchObject(deletedMovie);

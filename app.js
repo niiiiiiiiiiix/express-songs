@@ -99,7 +99,7 @@ const movies = [];
 
 app.post("/movies", (req, res) => {
   let newMovie = {
-    id: movies.length + 1,
+    movieID: movies.length + 1,
     movieName: req.body.movieName,
   };
   movies.push(newMovie);
@@ -111,21 +111,23 @@ app.get("/movies", (req, res) => {
   res.status(200).json(movies);
 });
 
-app.param("id", (req, res, next, id) => {
-  req.movie = movies.find((movie) => movie.id === parseInt(req.params.id));
+app.param("movieID", (req, res, next, movieID) => {
+  req.movie = movies.find(
+    (movie) => movie.movieID === parseInt(req.params.movieID)
+  );
   next();
 });
 
-app.get("/movies/:id", (req, res) => {
+app.get("/movies/:movieID", (req, res) => {
   res.status(200).json(req.movie);
 });
 
-app.put("/movies/:id", (req, res) => {
+app.put("/movies/:movieID", (req, res) => {
   req.movie.movieName = req.body.movieName;
   res.status(200).json(req.movie);
 });
 
-app.delete("/movies/:id", (req, res) => {
+app.delete("/movies/:movieID", (req, res) => {
   let index = movies.indexOf(req.movie);
   movies.splice(index, 1);
 
