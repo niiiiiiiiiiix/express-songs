@@ -94,4 +94,17 @@ app.post("/", requireJsonContent, (req, res, next) => {
   res.status(201).send("Thanks for the JSON!");
 });
 
+// MOVIES PART
+const movies = [];
+
+app.post("/movies", (req, res) => {
+  let newMovie = {
+    id: movies.length + 1,
+    movieName: req.body.movieName,
+  };
+  movies.push(newMovie);
+
+  res.status(201).json(newMovie);
+});
+
 module.exports = app;
