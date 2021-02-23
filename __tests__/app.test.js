@@ -90,7 +90,7 @@ describe("App", () => {
       .put("/songs/1")
       .send(updatedSong)
       .expect(200);
-    expect(body).toMatchObject(expectedSong);
+    expect(body).toEqual(expectedSong);
   });
 
   it("DELETE /songs/:id should delete the correct song", async () => {
