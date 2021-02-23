@@ -107,4 +107,8 @@ app.post("/movies", (req, res) => {
   res.status(201).json(newMovie);
 });
 
+app.get("/movies", (req, res) => {
+  res.status(200).json(movies);
+});
+
 module.exports = app;

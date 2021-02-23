@@ -10,4 +10,9 @@ describe("movies", () => {
       .expect(201);
     expect(body).toMatchObject(newMovie);
   });
+
+  it("GET /movies should return an array containing one movie", async () => {
+    const { body } = await request(app).get("/movies").expect(200);
+    expect(body).toMatchObject([{ movieName: "Lion King" }]);
+  });
 });
