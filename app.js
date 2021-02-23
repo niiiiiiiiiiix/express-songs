@@ -118,4 +118,10 @@ app.get("/movies/:id", (req, res) => {
   res.status(200).json(searchMovie);
 });
 
+app.put("/movies/:id", (req, res) => {
+  let movie = movies.find((movie) => movie.id === parseInt(req.params.id));
+  movie.movieName = req.body.movieName;
+  res.status(200).json(movie);
+});
+
 module.exports = app;

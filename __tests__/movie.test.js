@@ -21,4 +21,13 @@ describe("movies", () => {
     const { body } = await request(app).get("/movies/1").expect(200);
     expect(body).toMatchObject(expectedMovie);
   });
+
+  it("PUT /movies/:id should return the movie with id", async () => {
+    const updatedMovie = { movieName: "Frozen 2" };
+    const { body } = await request(app)
+      .put("/movies/1")
+      .send(updatedMovie)
+      .expect(200);
+    expect(body).toMatchObject(updatedMovie);
+  });
 });
