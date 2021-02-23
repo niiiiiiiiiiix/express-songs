@@ -111,11 +111,13 @@ app.get("/movies", (req, res) => {
   res.status(200).json(movies);
 });
 
+app.param("id", (req, res, next, id) => {
+  req.movie = movies.find((movie) => movie.id === parseInt(req.params.id));
+  next();
+});
+
 app.get("/movies/:id", (req, res) => {
-  let searchMovie = movies.find(
-    (movie) => movie.id === parseInt(req.params.id)
-  );
-  res.status(200).json(searchMovie);
+  res.status(200).json(req.movie);
 });
 
 app.put("/movies/:id", (req, res) => {
