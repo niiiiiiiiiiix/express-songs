@@ -18,8 +18,11 @@ app.post("/", requireJsonContent, (req, res, next) => {
   res.status(201).send("Thanks for the JSON!");
 });
 
+// SONGS PART
+
 const songsRouter = require("./routes/songs.routes");
-app.use("/songs", songsRouter);
+app.use("/songs", songsRouter); // "/songs" is a namespace so that in songs.routes.js we don't have to keep referring to it
+// i.e. instead of router.get("/songs") we can just use router.get("/")
 
 // MOVIES PART
 
