@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const Joi = require("joi");
+const jsonContent = require("../middleware/requireJSONcontent");
 
 const songs = [
   {
@@ -9,21 +11,40 @@ const songs = [
   },
 ];
 
+function validateSong(song) {
+  const schema = Joi.object({
+    id: Joi.number().integer(),
+    name: Joi.string().min(3).required(),
+    artist: Joi.string().min(3).required(),
+  });
+  return schema.validate(song);
+}
+
 router.get("/", (req, res) => {
   res.status(200).json(songs);
 });
 
 // POST /songs
-router.post("/", (req, res) => {
+router.post("/", jsonContent, (req, res, next) => {
   // console.log(req.body);
   let newSong = {
     id: songs.length + 1,
     name: req.body.name,
     artist: req.body.artist,
   };
-  songs.push(newSong);
 
-  res.status(201).json(newSong);
+  // res.status(201).json(newSong);
+
+  const validation = validateSong(req.body);
+  if (validation.error) {
+    const error = new Error(validation.error.details[0].message);
+    // 400 Bad Request
+    error.statusCode = 400;
+    next(error);
+  } else {
+    songs.push(newSong);
+    res.status(201).json(newSong);
+  }
 });
 
 router.param("id", (req, res, next, id) => {
