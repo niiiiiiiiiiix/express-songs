@@ -22,7 +22,7 @@ app.use("/songs", songsRouter); // "/songs" is a namespace so that in songs.rout
 const moviesRouter = require("./routes/movies.routes");
 app.use("/movies", moviesRouter);
 
-// error handling
+// start: example error handling
 // app.get("/song", (req, res, next) => {
 //   const err = new Error("Unexpected network error");
 //   next(err);
@@ -38,6 +38,7 @@ app.use("/movies", moviesRouter);
 //     next(err);
 //   }
 // });
+// end: example error handling
 
 app.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500;

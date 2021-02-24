@@ -59,10 +59,18 @@ router.get("/:id", (req, res) => {
   res.status(200).json(req.song);
 });
 
-router.put("/:id", (req, res) => {
-  req.song.name = req.body.name;
-  req.song.artist = req.body.artist;
-  res.status(200).json(req.song);
+router.put("/:id", (req, res, next) => {
+  const validation = validateSong(req.body);
+  if (validation.error) {
+    const error = new Error(validation.error.details[0].message);
+    // 400 Bad Request
+    error.statusCode = 400;
+    next(error);
+  } else {
+    req.song.name = req.body.name;
+    req.song.artist = req.body.artist;
+    res.status(200).json(req.song);
+  }
 });
 
 router.delete("/:id", (req, res) => {
