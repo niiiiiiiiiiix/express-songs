@@ -25,6 +25,23 @@ router.post("/", jsonContent, async (req, res, next) => {
   res.status(201).json(song);
 });
 
+router.get("/:id", async (req, res) => {
+  const song = await ctrl.findById(req.params.id);
+  res.status(200).json(song);
+});
+
+router.put("/:id", async (req, res, next) => {
+  const song = await ctrl.updateById(req.params.id, req.body, next);
+  res.status(200).json(song);
+});
+
+router.delete("/:id", async (req, res, next) => {
+  const song = await ctrl.deleteById(req.params.id, next);
+  res.status(200).json(song);
+});
+
+module.exports = router;
+
 // router.post("/", jsonContent, async (req, res, next) => {
 //   try {
 //     const validation = validateSong(req.body);
@@ -52,21 +69,6 @@ router.post("/", jsonContent, async (req, res, next) => {
 //   // alternatively you can use "req.song = song"
 //   next();
 // });
-
-router.get("/:id", async (req, res) => {
-  const song = await ctrl.findById(req.params.id);
-  res.status(200).json(song);
-});
-
-router.put("/:id", async (req, res, next) => {
-  const song = await ctrl.updateById(req.params.id, req.body, next);
-  res.status(200).json(song);
-});
-
-router.delete("/:id", async (req, res, next) => {
-  const song = await ctrl.deleteById(req.params.id, next);
-  res.status(200).json(song);
-});
 
 // router.put("/:id", async (req, res, next) => {
 //   try {
@@ -123,5 +125,3 @@ router.delete("/:id", async (req, res, next) => {
 
 //   res.status(200).json(song);
 // });
-
-module.exports = router;
