@@ -2,53 +2,67 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const jsonContent = require("../middleware/requireJSONcontent");
+const Song = require("../models/song.model");
 
-const songs = [
-  {
-    id: 1,
-    name: "someSongName",
-    artist: "someSongArtist",
-  },
-];
+// const songs = [
+//   {
+//     id: 1,
+//     name: "someSongName",
+//     artist: "someSongArtist",
+//   },
+// ];
 
 function validateSong(song) {
   const schema = Joi.object({
     id: Joi.number().integer(),
-    name: Joi.string().min(3).required(),
-    artist: Joi.string().min(3).required(),
+    name: Joi.string().min(3),
+    artist: Joi.string().min(3),
   });
   return schema.validate(song);
 }
 
-router.get("/", (req, res) => {
-  res.status(200).json(songs);
-});
-
-// POST /songs
-router.post("/", jsonContent, (req, res, next) => {
-  // console.log(req.body);
-  let newSong = {
-    id: songs.length + 1,
-    name: req.body.name,
-    artist: req.body.artist,
-  };
-
-  // res.status(201).json(newSong);
-
-  const validation = validateSong(req.body);
-  if (validation.error) {
-    const error = new Error(validation.error.details[0].message);
-    // 400 Bad Request
-    error.statusCode = 400;
+router.get("/", async (req, res, next) => {
+  try {
+    const songs = await Song.find({});
+    res.status(200).json(songs);
+  } catch (error) {
     next(error);
-  } else {
-    songs.push(newSong);
-    res.status(201).json(newSong);
   }
 });
 
-router.param("id", (req, res, next, id) => {
-  req.song = songs.find((song) => song.id === parseInt(req.params.id));
+// POST /songs
+router.post("/", jsonContent, async (req, res, next) => {
+  try {
+    const newSong = new Song(req.body);
+    await newSong.save();
+    res.status(201).json(newSong);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// router.post("/", jsonContent, async (req, res, next) => {
+//   try {
+//     const validation = validateSong(req.body);
+//     if (validation.error) {
+//       const error = new Error(validation.error.details[0].message);
+//       // 400 Bad Request
+//       error.statusCode = 400;
+//       throw error;
+//     } else {
+//       const newSong = new Song(req.body);
+//       await newSong.save();
+//       res.status(201).json(newSong);
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.param("id", async (req, res, next, id) => {
+  const song = await Song.findById(id);
+  req.song = song;
+  // .find((song) => song.id === parseInt(req.params.id));
   // scope req.song is accessible both at param and get but not song
   // so "song = songs.find((song) => song.id === parseInt(req.params.id))" alone would not work
   // alternatively you can use "req.song = song"
@@ -59,24 +73,36 @@ router.get("/:id", (req, res) => {
   res.status(200).json(req.song);
 });
 
-router.put("/:id", (req, res, next) => {
-  const validation = validateSong(req.body);
-  if (validation.error) {
-    const error = new Error(validation.error.details[0].message);
-    // 400 Bad Request
-    error.statusCode = 400;
-    next(error);
-  } else {
-    req.song.name = req.body.name;
-    req.song.artist = req.body.artist;
-    res.status(200).json(req.song);
+router.put("/:id", async (req, res, next) => {
+  try {
+    const validation = validateSong(req.body);
+    if (validation.error) {
+      const error = new Error(validation.error.details[0].message);
+      // 400 Bad Request
+      error.statusCode = 400;
+      throw error;
+    } else {
+      const song = await Song.findByIdAndUpdate(req.song.id, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      res.status(200).json(song);
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
-router.delete("/:id", (req, res) => {
-  let index = songs.indexOf(req.song);
-  songs.splice(index, 1);
-  res.status(200).json(req.song);
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const song = await Song.findByIdAndDelete(req.song.id);
+    res.status(200).json(song);
+  } catch (error) {
+    next(error);
+  }
+  // let index = Song.indexof(req.song);
+  // Song.splice(index, 1);
+  // res.status(200).json(req.song);
 });
 
 // // GET /songs/id

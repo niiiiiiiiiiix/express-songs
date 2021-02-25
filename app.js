@@ -1,6 +1,6 @@
+require("./utils/db");
 const express = require("express");
 const requireJsonContent = require("./middleware/requireJSONcontent");
-require("./utils/db");
 
 const app = express();
 app.use(express.json()); // read up more on this

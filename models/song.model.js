@@ -5,6 +5,7 @@ const songSchema = new Schema({
   name: {
     type: String,
     required: [true, "Song name needed!"],
+    minlength: 1,
   },
   artist: {
     type: String,
