@@ -1,4 +1,6 @@
 const express = require("express");
+const requireJsonContent = require("./middleware/requireJSONcontent");
+require("./utils/db");
 
 const app = express();
 app.use(express.json()); // read up more on this
@@ -7,9 +9,9 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-// app.post("/", requireJsonContent, (req, res, next) => {
-//   res.status(201).send("Thanks for the JSON!");
-// });
+app.post("/", requireJsonContent, (req, res, next) => {
+  res.status(201).send("Thanks for the JSON!");
+});
 
 // SONGS PART
 

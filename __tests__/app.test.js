@@ -25,7 +25,7 @@ describe("App", () => {
 
   it("POST / should throw error when sending non-json content", async () => {
     const { text } = await request(app).post("/").send("non-json").expect(400);
-    expect(text).toBe("Server wants application/json!");
+    expect(text).toBe("Not json");
   });
 
   it("POST / should be successful when sending json content", async () => {
