@@ -1,18 +1,43 @@
-// const request = require("supertest");
-// const app = require("../app");
+const request = require("supertest");
+const app = require("../app");
+const Song = require("../models/song.model");
+const dbHandlers = require("../test/dbHandler");
 
-// describe("App", () => {
-//   it("GET /songs should be successful in returning the full song list", async () => {
-//     const { body } = await request(app).get("/songs").expect(200);
+describe("App", () => {
+  beforeAll(async () => await dbHandlers.connect());
 
-//     expect(body).toEqual([
-//       {
-//         id: 1,
-//         name: "someSongName",
-//         artist: "someSongArtist",
-//       },
-//     ]);
-//   });
+  beforeEach(async () => {
+    const songData = [
+      {
+        name: "someSongName1",
+        artist: "someSongArtist1",
+      },
+      {
+        name: "someSongName2",
+        artist: "someSongArtist2",
+      },
+    ];
+    await Song.create(songData);
+  });
+
+  afterEach(async () => await dbHandlers.clearDatabase());
+  afterAll(async () => await dbHandlers.closeDatabase());
+
+  it("GET /songs should be successful in returning the full song list", async () => {
+    const { body } = await request(app).get("/songs").expect(200);
+
+    expect(body).toMatchObject([
+      {
+        name: "someSongName1",
+        artist: "someSongArtist1",
+      },
+      {
+        name: "someSongName2",
+        artist: "someSongArtist2",
+      },
+    ]);
+  });
+});
 
 //   it("POST /songs should be successful in adding item", async () => {
 //     const newSong = {
