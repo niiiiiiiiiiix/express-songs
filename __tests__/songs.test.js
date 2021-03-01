@@ -19,16 +19,27 @@ describe("App", () => {
   afterEach(async () => await dbHandlers.clearDatabase());
   afterAll(async () => await dbHandlers.closeDatabase());
 
-  it("GET /songs should be successful in returning the full song list", async () => {
-    const { body } = await request(app).get("/songs").expect(200);
-
-    expect(body).toMatchObject([
+  it("GET should respond with all songs", async () => {
+    const expectedSongsData = [
       {
         name: "song 1",
         artist: "artist 1",
       },
-    ]);
+    ];
+    const response = await request(app).get("/songs").expect(200);
+    expect(response.body).toMatchObject(expectedSongsData);
   });
+
+  // it("GET /songs should be successful in returning the full song list", async () => {
+  //   const { body } = await request(app).get("/songs").expect(200);
+
+  //   expect(body).toMatchObject([
+  //     {
+  //       name: "song 1",
+  //       artist: "artist 1",
+  //     },
+  //   ]);
+  // });
 });
 
 //   it("POST /songs should be successful in adding item", async () => {

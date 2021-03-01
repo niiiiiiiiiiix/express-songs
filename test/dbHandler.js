@@ -12,7 +12,7 @@ module.exports.connect = async () => {
     useFindAndModify: false,
     useCreateIndex: true,
   };
-  await mongoose.disconnect(uri);
+  await mongoose.disconnect();
   await mongoose.connect(uri, mongooseOpts);
 };
 
