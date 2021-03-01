@@ -1,13 +1,13 @@
 const request = require("supertest");
 const app = require("../app");
 
-describe("App", () => {
+describe.skip("App", () => {
   it("should pass", () => {
     expect(1).toBe(1);
   });
 });
 
-describe("App", () => {
+describe.skip("App", () => {
   it("GET / should respond with Hello World", async () => {
     const response = await request(app).get("/");
     // const response = await request(app).get("/").expect(200); then can remove expect...toBe(200)

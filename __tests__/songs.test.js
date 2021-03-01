@@ -9,12 +9,8 @@ describe("App", () => {
   beforeEach(async () => {
     const songData = [
       {
-        name: "someSongName1",
-        artist: "someSongArtist1",
-      },
-      {
-        name: "someSongName2",
-        artist: "someSongArtist2",
+        name: "song 1",
+        artist: "artist 1",
       },
     ];
     await Song.create(songData);
@@ -28,12 +24,8 @@ describe("App", () => {
 
     expect(body).toMatchObject([
       {
-        name: "someSongName1",
-        artist: "someSongArtist1",
-      },
-      {
-        name: "someSongName2",
-        artist: "someSongArtist2",
+        name: "song 1",
+        artist: "artist 1",
       },
     ]);
   });
