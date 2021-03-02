@@ -67,23 +67,35 @@ describe("App", () => {
     // so if we use body then it can just be expect(body)....
   });
 
-  // it("PUT /songs/:id should update the song entry", async () => {
-  //   const updatedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
-  //   const expectedSong = {
-  //     id: 1,
-  //     name: "Pink Moon 2",
-  //     artist: "Nick Drake 2",
-  //   };
-  //   const { body } = await request(app)
-  //     .put("/songs/1")
-  //     .send(updatedSong)
-  //     .expect(200);
-  //   expect(body).toEqual(expectedSong);
-  // });
+  it("PUT /songs/:id should update the song entry", async () => {
+    const song = await Song.findOne({ name: "song 1" });
+    const response = await (await request(app).put(`/songs/${song.id}`))
+      .send({ name: "song 1.1" })
+      .expect(200);
+    expect(response.body.name).toEqual("song 1.1");
 
-  // it("DELETE /songs/:id should delete the correct song", async () => {
-  //   const deletedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
-  //   const { body } = await request(app).delete("/songs/1").expect(200);
-  //   expect(body).toMatchObject(deletedSong);
-  // });
+    // const updatedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
+    // const expectedSong = {
+    //   id: 1,
+    //   name: "Pink Moon 2",
+    //   artist: "Nick Drake 2",
+    // };
+    // const { body } = await request(app)
+    //   .put("/songs/1")
+    //   .send(updatedSong)
+    //   .expect(200);
+    // expect(body).toEqual(expectedSong);
+  });
+
+  it("DELETE /songs/:id should delete the correct song", async () => {
+    const song = await Song.findOne({ name: "song 2" });
+    const response = await (
+      await request(app).delete(`/songs/${song.id}`)
+    ).expect(200);
+    expect(response.body.name).toEqual("song 2");
+
+    // const deletedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
+    // const { body } = await request(app).delete("/songs/1").expect(200);
+    // expect(body).toMatchObject(deletedSong);
+  });
 });

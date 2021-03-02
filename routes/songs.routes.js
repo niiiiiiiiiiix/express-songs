@@ -6,8 +6,8 @@ const jsonContent = require("../middleware/requireJSONcontent");
 const ctrl = require("../controllers/songs.controllers");
 const User = require("../models/user.model");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const createJWTToken = require("../config/jwt");
+const protectRoute = require("../middleware/protectRoute");
 
 // function validateSong(song) {
 //   const schema = Joi.object({
@@ -35,20 +35,6 @@ router.get("/:id", async (req, res) => {
 });
 
 ////// PROTECTION FOR PUT AND DELETE
-
-const protectRoute = (req, res, next) => {
-  try {
-    if (!req.cookies.token) {
-      throw new Error("You are not authorized");
-    } else {
-      req.user = jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY);
-      next();
-    }
-  } catch (err) {
-    err.statusCode = 401;
-    next(err);
-  }
-};
 
 router.put("/:id", protectRoute, async (req, res, next) => {
   try {
