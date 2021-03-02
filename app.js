@@ -1,9 +1,13 @@
-require("./utils/db");
+require("dotenv").config();
+
 const express = require("express");
 const requireJsonContent = require("./middleware/requireJSONcontent");
 
 const app = express();
 app.use(express.json()); // read up more on this
+
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello World");
@@ -16,7 +20,8 @@ app.post("/", requireJsonContent, (req, res, next) => {
 // SONGS PART
 
 const songsRouter = require("./routes/songs.routes");
-app.use("/songs", songsRouter); // "/songs" is a namespace so that in songs.routes.js we don't have to keep referring to it
+app.use("/songs", songsRouter);
+// "/songs" is a namespace so that in songs.routes.js we don't have to keep referring to it
 // i.e. instead of router.get("/songs") we can just use router.get("/")
 
 // MOVIES PART
