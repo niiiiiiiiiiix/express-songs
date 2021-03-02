@@ -32,8 +32,8 @@ const findById = async (id, next) => {
 const updateById = async (id, body, next) => {
   try {
     const song = await Song.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
+      new: true, // return updated content, if false return old value
+      runValidators: true, // check against mongoose song model
     });
     return song;
   } catch (err) {

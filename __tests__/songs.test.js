@@ -2,39 +2,39 @@ const request = require("supertest");
 const app = require("../app");
 const Song = require("../models/song.model");
 const dbHandlers = require("../test/dbHandler");
+// const User = require("../models/user.model");
+const createJWTToken = require("../config/jwt");
 
 describe("App", () => {
-  beforeAll(async () => await dbHandlers.connect());
+  let token;
+  const songsData = [
+    {
+      name: "song 1",
+      artist: "artist 1",
+    },
+    {
+      name: "song 2",
+      artist: "artist 2",
+    },
+  ];
+
+  beforeAll(async () => {
+    await dbHandlers.connect();
+    // const user = new User({ username: "username", password: "password" });
+    // await user.save();
+
+    token = createJWTToken("user.username");
+  });
 
   beforeEach(async () => {
-    const songsData = [
-      {
-        name: "song 1",
-        artist: "artist 1",
-      },
-      {
-        name: "song 2",
-        artist: "artist 2",
-      },
-    ];
     await Song.create(songsData);
   });
   afterEach(async () => await dbHandlers.clearDatabase());
   afterAll(async () => await dbHandlers.closeDatabase());
 
   it("GET should respond with all songs", async () => {
-    const expectedSongsData = [
-      {
-        name: "song 1",
-        artist: "artist 1",
-      },
-      {
-        name: "song 2",
-        artist: "artist 2",
-      },
-    ];
     const response = await request(app).get("/songs").expect(200);
-    expect(response.body).toMatchObject(expectedSongsData);
+    expect(response.body.length).toEqual(2);
   });
 
   it("POST /songs should be successful in adding item", async () => {
@@ -67,35 +67,42 @@ describe("App", () => {
     // so if we use body then it can just be expect(body)....
   });
 
-  it("PUT /songs/:id should update the song entry", async () => {
-    const song = await Song.findOne({ name: "song 1" });
-    const response = await (await request(app).put(`/songs/${song.id}`))
-      .send({ name: "song 1.1" })
-      .expect(200);
-    expect(response.body.name).toEqual("song 1.1");
+  describe("DELETE /:id", () => {
+    it("should throw error if unauthorised", async () => {
+      const song = await Song.findOne({ name: "song 2" });
+      const response = await request(app).delete(`/songs/${song.id}`);
 
-    // const updatedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
-    // const expectedSong = {
-    //   id: 1,
-    //   name: "Pink Moon 2",
-    //   artist: "Nick Drake 2",
-    // };
-    // const { body } = await request(app)
-    //   .put("/songs/1")
-    //   .send(updatedSong)
-    //   .expect(200);
-    // expect(body).toEqual(expectedSong);
+      expect(response.status).toBe(401);
+    });
+
+    it("should delete song successfully if authorised and given valid id", async () => {
+      const song = await Song.findOne({ name: "song 1" });
+      const response = await request(app)
+        .delete(`/songs/${song.id}`)
+        .set("Cookie", `token=${token}`);
+      expect(response.status).toBe(200);
+      expect(response.body.name).toBe("song 1");
+    });
   });
 
-  it("DELETE /songs/:id should delete the correct song", async () => {
-    const song = await Song.findOne({ name: "song 2" });
-    const response = await (
-      await request(app).delete(`/songs/${song.id}`)
-    ).expect(200);
-    expect(response.body.name).toEqual("song 2");
+  describe("PUT /:id", () => {
+    it("should modify correct song successfully if authorised and given valid id", async () => {
+      const song = await Song.findOne({ name: "song 1" });
+      const response = await request(app)
+        .put(`/songs/${song.id}`)
+        .send({ name: "123" })
+        .set("Cookie", `token=${token}`);
+      expect(response.status).toBe(200);
+      // expect(response.body.name).toBe("123");
+      expect(response.body).toMatchObject({ name: "123", artist: "artist 1" });
+    });
 
-    // const deletedSong = { name: "Pink Moon 2", artist: "Nick Drake 2" };
-    // const { body } = await request(app).delete("/songs/1").expect(200);
-    // expect(body).toMatchObject(deletedSong);
+    it("should throw error if unauthorised", async () => {
+      const song = await Song.findOne({ name: "song 1" });
+      const response = await request(app)
+        .put(`/songs/${song.id}`)
+        .send({ name: "123" });
+      expect(response.status).toBe(401);
+    });
   });
 });
